@@ -5,34 +5,180 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atividades - TI Lemos Supermercado</title>
     <style>
+        :root {
+        --bg-color: #f9f9f9;
+        --text-color: #333;
+        --heading-color: #2c3e50;
+        --link-color: #007bff;
+        --link-hover-bg: skyblue;
+        --overlay-bg: rgba(0, 0, 0, 0.9);
+        --overlay-text: white;
+        --overlay-accent: #ff5555;
+    }
+    
+    :root[data-theme='dark'] {
+        --bg-color: #121212;
+        --text-color: #ddd;
+        --heading-color: #ffffff;
+        --link-color: #66b2ff;
+        --link-hover-bg: #333;
+        --overlay-bg: rgba(255, 255, 255, 0.9);
+        --overlay-text: black;
+        --overlay-accent: #ff4444;
+    }
+    
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            background-color: #f9f9f9;
+            background-color: var(--bg-color);
+            color: var(--text-color);
         }
+    
         h1 {
-            color: #2c3e50;
+            color: var(--heading-color);
         }
+    
         iframe {
             border: 1px solid #ccc;
             border-radius: 8px;
         }
+    
         p {
             font-size: 1rem;
-            color: #333;
         }
+    
         a {
-            color: #007bff;
+            color: var(--link-color);
             text-decoration: none;
         }
+    
         a:hover {
             text-decoration: underline;
+        }
+    
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+    
+        ul li {
+            margin: 15px;
+            height: 20px;
+        }
+    
+        .link_tools {
+            border: solid black 1px;
+            text-decoration: none;
+            padding: 5px;
+            border-radius: .1em;
+            transition: 300ms;
+            display: inline-block;
+        }
+    
+        .link_tools:hover {
+            background-color: var(--link-hover-bg);
+            color: black;
+            transition: 300ms;
+            text-decoration: none;
+        }
+    
+        .overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--overlay-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: var(--overlay-text);
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+    
+        .overlay h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: blink 1.2s infinite;
+            color: var(--overlay-accent);
+        }
+    
+        .overlay p {
+            font-size: 1.2rem;
+            color: var(--overlay-text);
+        }
+    
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
     </style>
 </head>
 <body>
-    <h1>Lista de atividades do TI - Lemos Supermercado</h1>
-    <iframe src="https://suporte-ti-lemos.notion.site/ebd/1dd7a654fd49800bae8fe2c968831f2e?v=1dd7a654fd49801eb6b1000c23ccec4b" width="100%" height="600" frameborder="0" allowfullscreen></iframe>
-    <p>Deseja algo? Basta responder nosso questionário para sugerir melhorias e verificar nossas ações de TI. Clique no <a href="https://forms.gle/7dMEaF1oTdVgzmS88" target="_blank" rel="noopener noreferrer">link</a> para acessar o nosso questionário.</p>
+    <div id="conteudo">
+        <h1>Lista de atividades do TI - Lemos Supermercado</h1>
+        <iframe src="https://suporte-ti-lemos.notion.site/ebd/1dd7a654fd49800bae8fe2c968831f2e?v=1dd7a654fd49801eb6b1000c23ccec4b" width="100%" height="600" frameborder="0" allowfullscreen></iframe>
+        <center>
+            <p>Deseja algo? Basta responder nosso questionário para sugerir melhorias e verificar nossas ações de TI. Clique no <a href="https://forms.gle/7dMEaF1oTdVgzmS88" target="_blank" rel="noopener noreferrer">link</a> para acessar o nosso questionário.</p>
+        </center>
+        <h1>Algumas Outras Ferramentas</h1>
+        <ul>
+            <li><a class="link_tools" href="https://monitoramentovrsoftware.statuspage.io/#">Monitoramento de Status ( pagamentos )</a></li>
+            <li><a class="link_tools" href="http://192.168.0.129:9000/">VR Service Manager ( Apenas dentro de loja )</a></li>
+        </ul>
+        <button id="toggle-theme" style=" position: fixed; top: 20px; right: 20px; padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; z-index: 10000; font-size: 1.2rem;">Tema</button>
+    </div>
+    <script>
+        function verificarDisponibilidade() {
+            const agora = new Date();
+            const hora = agora.getHours();
+
+            // Mostra conteúdo apenas entre 08h e 18h
+            if (hora < 8 || hora >= 18) {
+                document.getElementById('conteudo').style.display = 'none';
+
+                const overlay = document.createElement('div');
+                overlay.className = 'overlay';
+                overlay.innerHTML = `
+                    <h1>🚫 Indisponível no momento</h1>
+                    <p>Nosso sistema funciona das 08:00 às 18:00.<br>Por favor, retorne nesse horário.</p>
+                `;
+                document.body.appendChild(overlay);
+            }
+        }
+
+        // Executa ao carregar a página
+        window.onload = verificarDisponibilidade;
+    </script>
+    <script>
+        const themeButton = document.getElementById('toggle-theme');
+    
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeButton.textContent = theme === 'dark' ? '🌙 Tema': '🌞 Tema';
+        }
+    
+        function toggleTheme() {
+            const current = localStorage.getItem('theme') || (window.matchMedia("(prefers-color-scheme: dark)").matches ? 'dark' : 'light');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+        }
+    
+        themeButton.addEventListener('click', toggleTheme);
+    
+        // Detecta tema salvo ou do sistema ao carregar
+        (function () {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else {
+                const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+                applyTheme(systemPrefersDark ? 'dark' : 'light');
+            }
+        })();
+    </script>
+    
 </body>
 </html>
